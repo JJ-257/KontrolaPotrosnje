@@ -63,6 +63,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:potrosnja_plus/screens/scan_barcode_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/settings_provider.dart';
@@ -112,6 +113,7 @@ class MyApp extends StatelessWidget {
             '/incomeOverview': (context) => const IncomeOverviewScreen(),
             '/scanQr': (context) => const ScanQrScreen(),
             '/settings': (context) => const SettingsScreen(),
+            '/scanBarcode': (context) => const ScanBarcodeScreen(),
           },
         );
       },

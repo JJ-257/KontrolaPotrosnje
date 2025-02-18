@@ -79,156 +79,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     return '${amount.toStringAsFixed(2)} $currency';
   }
 
-  /// Metoda koja traži potrebne dozvole za čitanje/pisanje u spoljašnju memoriju.
-  // Future<bool> _requestPermissions() async {
-  //   // 1. Za Android 6 do 10 (SDK 23 do 29)
-  //   var storageStatus = await Permission.storage.request();
-  //
-  //   // 2. Za Android 11 i novije (MANAGE_EXTERNAL_STORAGE)
-  //   // Kod ispod pokušava da traži "Manage all files" dozvolu.
-  //   if (storageStatus.isGranted) {
-  //     var manageStorageStatus = await Permission.manageExternalStorage.request();
-  //     // Ako je i to odobreno ili nije primenljivo (na starijim verzijama),
-  //     // možemo nastaviti dalje.
-  //     if (manageStorageStatus.isGranted || manageStorageStatus.isLimited) {
-  //       return true;
-  //     }
-  //     // Ako nije odobreno, ali je storageStatus bio granted, vratimo true
-  //     // za starije verzije Androida.
-  //     // (Na novijima će ipak baciti grešku ako korisnik ne odobri "manage external storage".)
-  //     return true;
-  //   }
-  //
-  //   // Ako nije ni storage dozvola odobrena, vrati false.
-  //   return false;
-  // }
 
-  // Ovo možeš staviti npr. u neki util fajl, ili unutar samog screen-a:
-  // Future<bool> requestStoragePermissions() async {
-  //   // 1. Tražimo klasičnu dozvolu za storage (za Android 6 do 10).
-  //   final storageStatus = await Permission.storage.request();
-  //
-  //   // 2. Ako smo dobili storage dozvolu, onda za Android 11+ (manageExternalStorage).
-  //   //    Ako je telefon stariji (SDK < 30), ovo neće praviti problem.
-  //   if (storageStatus.isGranted) {
-  //     final manageExternalStatus = await Permission.manageExternalStorage.request();
-  //
-  //     // Ako je odobreno (ili nije neophodno), vrati true.
-  //     // Napomena: .isLimited može se pojaviti na iOS-u, ali ne i na Androidu.
-  //     if (manageExternalStatus.isGranted || manageExternalStatus.isLimited) {
-  //       return true;
-  //     }
-  //
-  //     // Ako je korisnik odbio MANAGE_EXTERNAL_STORAGE, ali je ipak dao osnovnu dozvolu,
-  //     // za starije verzije Androida to može biti dovoljno.
-  //     // Možeš vratiti true da bar starije verzije rade.
-  //     return true;
-  //   }
-  //
-  //   // Ako storageStatus nije ni odobren, vrati false.
-  //   return false;
-  // }
-  // Future<bool> requestStoragePermissions(BuildContext context) async {
-  //   // Uzimamo SettingsProvider da bismo doznali jezik
-  //   final settings = Provider.of<SettingsProvider>(context, listen: false);
-  //
-  //   // Definišemo stringove za poruke
-  //   final permanentlyDeniedMessageHr = 'Omogućite dozvolu u Postavkama kako biste mogli sačuvati Excel datoteke.';
-  //   final permanentlyDeniedMessageEn = 'Allow permission in Settings to be able to save Excel files.';
-  //
-  //   final settingsLabelHr = 'Postavke';
-  //   final settingsLabelEn = 'Settings';
-  //
-  //   // 1. Proverimo trenutni status “storage” dozvole (READ/WRITE)
-  //   PermissionStatus storageStatus = await Permission.storage.status;
-  //
-  //   // Ako je trajno odbijena (“Don’t ask again”)
-  //   if (storageStatus.isPermanentlyDenied) {
-  //     // Pokažemo SnackBar sa akcijom “Postavke”/”Settings”
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text(
-  //           settings.language == 'hr'
-  //               ? permanentlyDeniedMessageHr
-  //               : permanentlyDeniedMessageEn,
-  //         ),
-  //         action: SnackBarAction(
-  //           label: settings.language == 'hr'
-  //               ? settingsLabelHr
-  //               : settingsLabelEn,
-  //           onPressed: () {
-  //             // Otvaramo App Settings
-  //             openAppSettings();
-  //           },
-  //         ),
-  //       ),
-  //     );
-  //     return false;
-  //   }
-  //
-  //   // 2. Ako nije permanentlyDenied, onda zatražimo storage dozvolu
-  //   storageStatus = await Permission.storage.request();
-  //
-  //   // Ako i posle traženja nije odobreno, obavestimo korisnika
-  //   if (!storageStatus.isGranted) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text(
-  //           settings.language == 'hr'
-  //               ? 'Storage dozvola nije odobrena.'
-  //               : 'Storage permission not granted.',
-  //         ),
-  //       ),
-  //     );
-  //     return false;
-  //   }
-  //
-  //   // 3. Za Android 11+ treba i MANAGE_EXTERNAL_STORAGE (ako hoćeš pristup Downloads folderu)
-  //   PermissionStatus manageStatus = await Permission.manageExternalStorage.status;
-  //
-  //   if (manageStatus.isPermanentlyDenied) {
-  //     // Isti scenario: SnackBar s akcijom
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text(
-  //           settings.language == 'hr'
-  //               ? permanentlyDeniedMessageHr
-  //               : permanentlyDeniedMessageEn,
-  //         ),
-  //         action: SnackBarAction(
-  //           label: settings.language == 'hr'
-  //               ? settingsLabelHr
-  //               : settingsLabelEn,
-  //           onPressed: () {
-  //             openAppSettings();
-  //           },
-  //         ),
-  //       ),
-  //     );
-  //     return false;
-  //   }
-  //
-  //   // Ako još nije odobreno (samo "denied"), probamo da tražimo
-  //   if (!manageStatus.isGranted) {
-  //     manageStatus = await Permission.manageExternalStorage.request();
-  //     if (!manageStatus.isGranted) {
-  //       // Korisnik je odbio
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text(
-  //             settings.language == 'hr'
-  //                 ? 'Pristup svim datotekama nije odobren.'
-  //                 : 'Manage all files permission not granted.',
-  //           ),
-  //         ),
-  //       );
-  //       return false;
-  //     }
-  //   }
-  //
-  //   // Ako smo stigli ovde, sve dozvole su OK
-  //   return true;
-  // }
 
   // ------------------------------------------------------------------------
   //  LOGIKA ZA TRAŽENJE DOZVOLA, KOMBINACIJA:
@@ -531,10 +382,14 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : _errorMessage != null
-            ? Center(child: Text(
-          settings.language == 'hr' ? 'Pogreška: $_errorMessage' : 'Error: $_errorMessage',
-          style: const TextStyle(fontSize: 16),
-        ))
+            ? Center(
+          child: Text(
+            settings.language == 'hr'
+                ? 'Pogreška: $_errorMessage'
+                : 'Error: $_errorMessage',
+            style: const TextStyle(fontSize: 16),
+          ),
+        )
             : Padding(
           padding: const EdgeInsets.all(16.0),
           child: ClipRRect(
@@ -544,12 +399,14 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               child: Card(
                 color: Colors.white.withOpacity(0.75),
                 elevation: 12,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24)),
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Dropdown za odabir godine i mjeseca
                       Row(
                         children: [
                           Expanded(
@@ -560,7 +417,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                                 value: year,
                                 child: Text(
                                   year.toString(),
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ))
                                   .toList(),
@@ -571,7 +429,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                                 }
                               },
                               isExpanded: true,
-                              underline: Container(height: 1, color: Colors.grey[300]),
+                              underline: Container(
+                                  height: 1, color: Colors.grey[300]),
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -583,7 +442,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                                 value: month,
                                 child: Text(
                                   monthNames[month - 1],
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ))
                                   .toList(),
@@ -594,58 +454,73 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                                 }
                               },
                               isExpanded: true,
-                              underline: Container(height: 1, color: Colors.grey[300]),
+                              underline: Container(
+                                  height: 1, color: Colors.grey[300]),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 24),
-                      if (selectedYear == DateTime.now().year && selectedMonth == DateTime.now().month) ...[
-                        Text(
+
+                      // Dnevni trošak (prikazuje se samo ako je odabran trenutni mjesec)
+                      if (selectedYear == DateTime.now().year &&
+                          selectedMonth == DateTime.now().month) ...[
+                        _buildInfoRow(
                           settings.language == 'hr'
-                              ? 'Današnji trošak: ${_formatAmount(_dailyExpense, settings.currency)}'
-                              : 'Daily Expense: ${_formatAmount(_dailyExpense, settings.currency)}',
-                          style: const TextStyle(fontSize: 16),
+                              ? 'Današnji trošak'
+                              : 'Daily Expense',
+                          _formatAmount(_dailyExpense, settings.currency),
+                          Colors.red,
                         ),
-                        const SizedBox(height: 16),
+                        _divider(),
                       ],
-                      Text(
+
+                      // Troškovi
+                      _buildInfoRow(
                         settings.language == 'hr'
-                            ? 'Mjesečni trošak: ${_formatAmount(_monthlyExpense, settings.currency)}'
-                            : 'Monthly Expense: ${_formatAmount(_monthlyExpense, settings.currency)}',
-                        style: const TextStyle(fontSize: 16),
+                            ? 'Mjesečni trošak'
+                            : 'Monthly Expense',
+                        _formatAmount(_monthlyExpense, settings.currency),
+                        Colors.red,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
+                      _buildInfoRow(
                         settings.language == 'hr'
-                            ? 'Godišnji trošak: ${_formatAmount(_yearlyExpense, settings.currency)}'
-                            : 'Yearly Expense: ${_formatAmount(_yearlyExpense, settings.currency)}',
-                        style: const TextStyle(fontSize: 16),
+                            ? 'Godišnji trošak'
+                            : 'Yearly Expense',
+                        _formatAmount(_yearlyExpense, settings.currency),
+                        Colors.red,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
+
+                      // Razgraničenje između troškova i prihoda
+                      _divider(),
+
+                      // Prihodi
+                      _buildInfoRow(
                         settings.language == 'hr'
-                            ? 'Mjesečni prihod: ${_formatAmount(_monthlyIncome, settings.currency)}'
-                            : 'Monthly Income: ${_formatAmount(_monthlyIncome, settings.currency)}',
-                        style: const TextStyle(fontSize: 16),
+                            ? 'Mjesečni prihod'
+                            : 'Monthly Income',
+                        _formatAmount(_monthlyIncome, settings.currency),
+                        Colors.green,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
+                      _buildInfoRow(
                         settings.language == 'hr'
-                            ? 'Godišnji prihod: ${_formatAmount(_yearlyIncome, settings.currency)}'
-                            : 'Yearly Income: ${_formatAmount(_yearlyIncome, settings.currency)}',
-                        style: const TextStyle(fontSize: 16),
+                            ? 'Godišnji prihod'
+                            : 'Yearly Income',
+                        _formatAmount(_yearlyIncome, settings.currency),
+                        Colors.green,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
+
+                      // Razgraničenje između prihoda i razlike
+                      _divider(),
+
+                      // Razlika prihoda i troškova
+                      _buildInfoRow(
                         settings.language == 'hr'
-                            ? 'Razlika (mjesečni prihod - mjesečni trošak): ${_formatAmount(_monthlyDifference, settings.currency)}'
-                            : 'Difference (monthly income - monthly expense): ${_formatAmount(_monthlyDifference, settings.currency)}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: _monthlyDifference >= 0 ? Colors.green : Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            ? 'Mjesečni saldo'
+                            : 'Monthly balance',
+                        _formatAmount(_monthlyDifference, settings.currency),
+                        _monthlyDifference >= 0 ? Colors.green : Colors.red,
+                        isBold: true,
                       ),
                     ],
                   ),
@@ -656,6 +531,195 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         ),
       ),
     );
+
+    // return Scaffold(
+    //   appBar: AppBar(title: Text(title)),
+    //   floatingActionButton: FloatingActionButton(
+    //     onPressed: () => _onExportExcelPressed(context),
+    //     child: const Icon(Icons.file_download),
+    //   ),
+    //   body: Container(
+    //     decoration: const BoxDecoration(
+    //       gradient: LinearGradient(
+    //         colors: [Color(0xFFB3E5FC), Color(0xFFE1F5FE)],
+    //         begin: Alignment.topLeft,
+    //         end: Alignment.bottomRight,
+    //       ),
+    //     ),
+    //     child: _isLoading
+    //         ? const Center(child: CircularProgressIndicator())
+    //         : _errorMessage != null
+    //         ? Center(child: Text(
+    //       settings.language == 'hr' ? 'Pogreška: $_errorMessage' : 'Error: $_errorMessage',
+    //       style: const TextStyle(fontSize: 16),
+    //     ))
+    //         : Padding(
+    //       padding: const EdgeInsets.all(16.0),
+    //       child: ClipRRect(
+    //         borderRadius: BorderRadius.circular(24.0),
+    //         child: BackdropFilter(
+    //           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+    //           child: Card(
+    //             color: Colors.white.withOpacity(0.75),
+    //             elevation: 12,
+    //             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    //             child: Padding(
+    //               padding: const EdgeInsets.all(24.0),
+    //               child: Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: [
+    //                   Row(
+    //                     children: [
+    //                       Expanded(
+    //                         child: DropdownButton<int>(
+    //                           value: selectedYear,
+    //                           items: availableYears
+    //                               .map((year) => DropdownMenuItem<int>(
+    //                             value: year,
+    //                             child: Text(
+    //                               year.toString(),
+    //                               style: const TextStyle(fontWeight: FontWeight.bold),
+    //                             ),
+    //                           ))
+    //                               .toList(),
+    //                           onChanged: (value) {
+    //                             if (value != null) {
+    //                               setState(() => selectedYear = value);
+    //                               _fetchData();
+    //                             }
+    //                           },
+    //                           isExpanded: true,
+    //                           underline: Container(height: 1, color: Colors.grey[300]),
+    //                         ),
+    //                       ),
+    //                       const SizedBox(width: 16),
+    //                       Expanded(
+    //                         child: DropdownButton<int>(
+    //                           value: selectedMonth,
+    //                           items: availableMonths
+    //                               .map((month) => DropdownMenuItem<int>(
+    //                             value: month,
+    //                             child: Text(
+    //                               monthNames[month - 1],
+    //                               style: const TextStyle(fontWeight: FontWeight.bold),
+    //                             ),
+    //                           ))
+    //                               .toList(),
+    //                           onChanged: (value) {
+    //                             if (value != null) {
+    //                               setState(() => selectedMonth = value);
+    //                               _fetchData();
+    //                             }
+    //                           },
+    //                           isExpanded: true,
+    //                           underline: Container(height: 1, color: Colors.grey[300]),
+    //                         ),
+    //                       ),
+    //                     ],
+    //                   ),
+    //                   const SizedBox(height: 24),
+    //                   if (selectedYear == DateTime.now().year && selectedMonth == DateTime.now().month) ...[
+    //                     Text(
+    //                       settings.language == 'hr'
+    //                           ? 'Današnji trošak: ${_formatAmount(_dailyExpense, settings.currency)}'
+    //                           : 'Daily Expense: ${_formatAmount(_dailyExpense, settings.currency)}',
+    //                       style: const TextStyle(fontSize: 16),
+    //                     ),
+    //                     const SizedBox(height: 16),
+    //                   ],
+    //                   Text(
+    //                     settings.language == 'hr'
+    //                         ? 'Mjesečni trošak: ${_formatAmount(_monthlyExpense, settings.currency)}'
+    //                         : 'Monthly Expense: ${_formatAmount(_monthlyExpense, settings.currency)}',
+    //                     style: const TextStyle(fontSize: 16),
+    //                   ),
+    //                   const SizedBox(height: 16),
+    //                   Text(
+    //                     settings.language == 'hr'
+    //                         ? 'Godišnji trošak: ${_formatAmount(_yearlyExpense, settings.currency)}'
+    //                         : 'Yearly Expense: ${_formatAmount(_yearlyExpense, settings.currency)}',
+    //                     style: const TextStyle(fontSize: 16),
+    //                   ),
+    //                   const SizedBox(height: 16),
+    //                   Text(
+    //                     settings.language == 'hr'
+    //                         ? 'Mjesečni prihod: ${_formatAmount(_monthlyIncome, settings.currency)}'
+    //                         : 'Monthly Income: ${_formatAmount(_monthlyIncome, settings.currency)}',
+    //                     style: const TextStyle(fontSize: 16),
+    //                   ),
+    //                   const SizedBox(height: 16),
+    //                   Text(
+    //                     settings.language == 'hr'
+    //                         ? 'Godišnji prihod: ${_formatAmount(_yearlyIncome, settings.currency)}'
+    //                         : 'Yearly Income: ${_formatAmount(_yearlyIncome, settings.currency)}',
+    //                     style: const TextStyle(fontSize: 16),
+    //                   ),
+    //                   const SizedBox(height: 16),
+    //                   Text(
+    //                     settings.language == 'hr'
+    //                         ? 'Razlika (mjesečni prihod - mjesečni trošak): ${_formatAmount(_monthlyDifference, settings.currency)}'
+    //                         : 'Difference (monthly income - monthly expense): ${_formatAmount(_monthlyDifference, settings.currency)}',
+    //                     style: TextStyle(
+    //                       fontSize: 16,
+    //                       color: _monthlyDifference >= 0 ? Colors.green : Colors.red,
+    //                       fontWeight: FontWeight.bold,
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
+  // Funkcija za prikaz pojedinog reda (prihod/trošak/razlika)
+  Widget _buildInfoRow(String title, String value, Color color, {bool isBold = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Naslov (prihod, trošak, razlika) dobiva prostor prema potrebi
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              ),
+              overflow: TextOverflow.ellipsis, // Ako je predugačak, dodaje "..."
+              maxLines: 1,
+            ),
+          ),
+
+          // Vrijednost (iznos) ostaje fiksne širine
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              color: color, // Postavljanje boje
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+// Funkcija za crtanje crte između sekcija
+  Widget _divider() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Divider(
+        color: Colors.grey,
+        thickness: 1,
+      ),
+    );
+  }
+
 }
 

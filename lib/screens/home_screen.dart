@@ -626,6 +626,124 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.pushNamed(context, '/scanQr');
   }
 
+  //barkod skener
+
+  Future<void> _onScanBarcodePressed(BuildContext context) async {
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+
+    // 1️⃣ Provjera trenutnog statusa dozvole
+    final status = await Permission.camera.status;
+
+    if (status.isGranted) {
+      // ✅ Kamera je već dopuštena – pokrećemo barkod skener
+      _navigateToBarcodeScreen(context);
+      return;
+    }
+
+    if (status.isDenied) {
+      // 🚨 Korisnik je prvi put kliknuo "deny" – ali nije odabrao "Ne pitaj više"
+      final result = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(settings.language == 'hr'
+              ? 'Potrebna dozvola za kameru'
+              : 'Camera Permission Required'),
+          content: Text(settings.language == 'hr'
+              ? 'Aplikacija treba pristup kameri za skeniranje barkodova. Želite li sada odobriti pristup?'
+              : 'The app needs camera access to scan barcodes. Would you like to grant access now?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(settings.language == 'hr' ? 'Kasnije' : 'Later'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(settings.language == 'hr' ? 'Odobri' : 'Allow'),
+            ),
+          ],
+        ),
+      );
+
+      if (result == true) {
+        // Korisnik je odabrao "Odobri" – tražimo kameru ponovno
+        final newStatus = await Permission.camera.request();
+        if (newStatus.isGranted) {
+          _navigateToBarcodeScreen(context);
+        }
+      }
+      return;
+    }
+
+    if (status.isPermanentlyDenied || status.isRestricted) {
+      // 🚨 Korisnik je trajno odbio pristup kameri – mora ručno omogućiti u postavkama
+      final openSettings = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(settings.language == 'hr'
+              ? 'Dozvola za kameru je onemogućena'
+              : 'Camera Permission Disabled'),
+          content: Text(settings.language == 'hr'
+              ? 'Morate ručno omogućiti kameru u Postavkama. Želite li otvoriti Postavke sada?'
+              : 'You must enable camera permission from Settings. Open Settings now?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(settings.language == 'hr' ? 'Ne' : 'No'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(settings.language == 'hr' ? 'Da' : 'Yes'),
+            ),
+          ],
+        ),
+      );
+
+      if (openSettings == true) {
+        // Otvaramo postavke aplikacije
+        await openAppSettings();
+      }
+      return;
+    }
+
+    if (status.isLimited) {
+      // 🚨 iOS slučaj – dozvola je djelomično ograničena
+      final result = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(settings.language == 'hr'
+              ? 'Ograničen pristup kameri'
+              : 'Limited Camera Access'),
+          content: Text(settings.language == 'hr'
+              ? 'Trenutačno imate djelomičnu dozvolu za kameru. Možda neće raditi skeniranje. Želite li zatražiti potpunu dozvolu?'
+              : 'You currently have limited camera permission. Barcode scanning may not work properly. Would you like to request full permission?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(settings.language == 'hr' ? 'Kasnije' : 'Later'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(settings.language == 'hr' ? 'Traži ponovo' : 'Request Again'),
+            ),
+          ],
+        ),
+      );
+
+      if (result == true) {
+        final newStatus = await Permission.camera.request();
+        if (newStatus.isGranted) {
+          _navigateToBarcodeScreen(context);
+        }
+      }
+      return;
+    }
+  }
+
+// 📌 Funkcija koja navigira na barkod skener
+  void _navigateToBarcodeScreen(BuildContext context) {
+    Navigator.pushNamed(context, '/scanBarcode');
+  }
+
   // ------------------------------------------------------------------------
   //  PRIKAZ PROFILA (FirebaseAuth User)
   // ------------------------------------------------------------------------
@@ -740,6 +858,12 @@ class _HomeScreenState extends State<HomeScreen> {
         'title_en': 'Scan QR',
         'icon': Icons.qr_code_scanner,
         'action': (BuildContext ctx) => _onScanQrPressed(ctx),
+      },
+      {
+        'title_hr': 'Skeniraj Barkod - režije',
+        'title_en': 'Scan Barcode',
+        'icon': Icons.barcode_reader,
+        'action': (BuildContext ctx) => _onScanBarcodePressed(ctx),
       },
     ];
 
