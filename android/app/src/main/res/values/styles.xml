@@ -1,0 +1,32 @@
+<resources>
+    <!-- Tema koja se koristi prilikom pokretanja aplikacije prije učitavanja Flutter engine-a -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+
+    <!-- Tema koja se koristi nakon što Flutter učita svoj UI -->
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+
+    <!-- Definicija boje za pozadinu splash ekrana -->
+    <color name="splash_background">#FFFFFF</color>
+
+    <!-- Tema splash ekrana za Android 12+ koristeći SplashScreen API -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Pozadinska boja splash ekrana -->
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <!-- Ikona koja se prikazuje tijekom splash ekrana; ovdje se koristi launcher ikona -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!-- Trajanje animacije pri prelasku s splash ekrana -->
+        <item name="windowSplashScreenAnimationDuration">200</item>
+        <!-- Nakon splash ekrana koristi se glavna tema aplikacije -->
+        <item name="postSplashScreenTheme">@style/Theme.App</item>
+    </style>
+
+    <!-- Glavna tema aplikacije -->
+    <style name="Theme.App" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Ovdje možete dodati dodatne postavke glavne teme -->
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>
