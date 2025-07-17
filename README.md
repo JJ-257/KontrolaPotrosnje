@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 📊 KontrolaPotrošnje
 
 **KontrolaPotrošnje** je mobilna aplikacija za praćenje osobnih financija, razvijena pomoću Fluttera i Firebasea.
