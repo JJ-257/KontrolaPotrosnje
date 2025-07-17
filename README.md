@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 📊 KontrolaPotrošnje
 
 **KontrolaPotrošnje** je mobilna aplikacija za praćenje osobnih financija, razvijena pomoću Fluttera i Firebasea.
@@ -64,3 +65,6 @@ flutter run
 
 Razvio: [JJ-257]  
 Godina: 2025
+=======
+# KontrolaPotrosnje
+>>>>>>> dbb6a348c40e71952cfeb2ded661353ad57eaa03
