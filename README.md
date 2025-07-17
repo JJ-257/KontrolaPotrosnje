@@ -59,10 +59,17 @@ flutter run
 
 ---
 
+## 📸 Izgled aplikacije
+
+### 🧾 Prijava
+![Login](assets/1.jpg)
+
+### 📊 Glavni ekran
+![Glavni ekran](assets/2.jpg)
 ## 👨‍💻 Autor
 
 Razvio: [JJ-257]  
 Godina: 2025
 =======
 # KontrolaPotrosnje
->>>>>>> dbb6a348c40e71952cfeb2ded661353ad57eaa03
+
