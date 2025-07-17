@@ -19,8 +19,7 @@
 1. **Kloniraj repozitorij**
 
 ```bash
-git clone https://github.com/tvoje_korisnicko_ime/potrosnja_plus.git
-cd potrosnja_plus
+git clone https://github.com/JJ-257/KontrolaPotrosnje.git
 ```
 
 2. **Instaliraj sve pakete**
