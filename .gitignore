@@ -43,3 +43,24 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+# Flutter & Dart
+.packages
+build/
+.melos_tool/
+
+# Android
+android/key.properties
+android/app/google-services.json
+
+# iOS
+ios/Runner/GoogleService-Info.plist
+
+# IDE
+
+.vscode/
+
+# APK
+*.apk
+###############
+
+
